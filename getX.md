@@ -247,6 +247,7 @@ Use GetX for:
 * Bottom sheets
 
 **Recommended architecture for your project**
+
 For the e-commerce application you've been designing, I recommend this pattern:
 
 ```
