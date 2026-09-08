@@ -269,6 +269,23 @@ Data Source
  ├── Local Storage
  └── API
 ```
+For example:
+```
+ProductView
+     │
+     ▼
+ProductController
+     │
+     ▼
+ProductRepository
+     │
+     ▼
+Supabase
+```
+
+The controller should not directly contain all database logic.
+
+
 Use:
 
 ```dart id="q1x7kf"
