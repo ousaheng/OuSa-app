@@ -324,6 +324,7 @@ Notice:
 ```
 .obs
 ```
+
 makes the variable reactive.
 
 GetX's reactive system uses .obs to create observable state.
@@ -332,18 +333,32 @@ GetX's reactive system uses .obs to create observable state.
 
 **Obx()** is for reactive state.
 
-Example:
-```dart
-final count = 0.obs;
-```
-
 Use:
 
 ```dart 
 Obx()
 ```
 
-for reactive UI where appropriate.
+Example:
+```dart
+final count = 0.obs;
+```
+
+Then:
+
+```dart
+Obx(
+  () => Text(
+    '${controller.count.value}',
+  ),
+)
+```
+When:
+```dart
+controller.count.value++;
+```
+
+changes, Obx() automatically rebuilds the part of the UI that depends on count
 
 Use:
 
