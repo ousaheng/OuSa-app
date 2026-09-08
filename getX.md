@@ -246,6 +246,28 @@ Use GetX for:
 * Dialogs
 * Bottom sheets
 
+*** Recommended architecture for your project**
+For the e-commerce application you've been designing, I recommend this pattern:
+
+```
+View
+ │
+ │ observes
+ ▼
+Controller
+ │
+ │ calls
+ ▼
+Repository
+ │
+ │ calls
+ ▼
+Data Source
+ │
+ ├── Supabase
+ ├── Local Storage
+ └── API
+```
 Use:
 
 ```dart id="q1x7kf"
