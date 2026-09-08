@@ -629,9 +629,56 @@ The GetX dependency-management documentation describes Get.find() as retrieving 
 
 **10. What is Get.put()?**
 
-Get.put() registers/creates the dependency immediately.
+**Get.put()** registers/creates the dependency immediately.
 
-Use:
+Example:
+```dart
+Get.put(
+  AuthController(),
+);
+```
+
+Then:
+
+```dart
+final controller = Get.find<AuthController>();
+```
+Example:
+```dart
+Get.put<AuthController>(
+  AuthController(),
+);
+```
+Then anywhere:
+
+```dart
+Get.find<AuthController>();
+```
+**11. When should you use Get.put()?**
+Use it when the dependency should be created immediately.
+For example, a global service:
+```dart
+Get.put(
+  AuthService(),
+  permanent: true,
+);
+```
+Or an app-level service:
+```dart
+Get.put(
+  ThemeService(),
+  permanent: true,
+);
+```
+**What each part means:**
+**ThemeService()** → creates a new instance of your ThemeService class.
+**Get.put(...)** → tells GetX to store/register that instance in its dependency injection system.
+**permanent: true** → tells GetX not to automatically remove this service from memory, even when it's no longer being used by a particular route/page.
+
+
+
+Both refer to the registered instance.
+
 
 
 
