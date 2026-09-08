@@ -292,7 +292,7 @@ The controller should not directly contain all database logic.
 A controller contains the state and business/UI logic for a screen or feature.
 
 Example:
-```
+```dart
 import 'package:get/get.dart';
 
 class ProductController extends GetxController {
@@ -329,10 +329,11 @@ makes the variable reactive.
 GetX's reactive system uses .obs to create observable state.
 
 ***4. What is Obx()?***
+
 **Obx()** is for reactive state.
 
 Example:
-```
+```dart
 final count = 0.obs;
 ```
 
