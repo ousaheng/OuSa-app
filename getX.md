@@ -358,8 +358,58 @@ When:
 controller.count.value++;
 ```
 
-changes, Obx() automatically rebuilds the part of the UI that depends on count
+changes, **Obx()** automatically rebuilds the part of the UI that depends on count
 
+**Complete example**
+```dart
+class CounterController extends GetxController {
+  final count = 0.obs;
+
+  void increment() {
+    count.value++;
+  }
+}
+```
+
+UI:
+
+```dart
+class CounterView extends StatelessWidget {
+  CounterView({super.key});
+
+  final controller = Get.find<CounterController>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Obx(
+          () => Text(
+            'Count: ${controller.count.value}',
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: controller.increment,
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+```
+
+***Important***
+
+Do not do this:
+
+```dart
+Obx(
+  () => Scaffold(
+    appBar: AppBar(),
+    body: ...
+  ),
+)
+```
 Use:
 
 ```dart id="9c2vkd"
