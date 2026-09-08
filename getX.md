@@ -206,6 +206,34 @@ Do not create unnecessary files.
 
 # 🧠 GETX RESPONSIBILITIES
 
+Think of GetX as handling four major areas:
+```
+GetX
+│
+├── 1. State Management
+│   ├── Obx
+│   ├── GetBuilder
+│   └── GetX<T>
+│
+├── 2. Dependency Injection
+│   ├── Get.put()
+│   ├── Get.lazyPut()
+│   ├── Get.putAsync()
+│   └── Get.find()
+│
+├── 3. Route Management
+│   ├── Get.to()
+│   ├── Get.back()
+│   ├── Get.off()
+│   ├── Get.offAll()
+│   ├── Get.toNamed()
+│   └── GetPage
+│
+└── 4. UI Utilities
+    ├── Get.snackbar()
+    ├── Get.dialog()
+    └── Get.bottomSheet()
+```
 Use GetX for:
 
 * State management
