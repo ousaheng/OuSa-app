@@ -332,13 +332,13 @@ GetX's reactive system uses .obs to create observable state.
 **Obx()** is for reactive state.
 
 Example:
-dart```
+```
 final count = 0.obs;
 ```
 
 Use:
 
-```dart id="q1x7kf"
+```dart 
 Obx()
 ```
 
