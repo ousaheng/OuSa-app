@@ -672,11 +672,11 @@ Get.put(
 ```
 **What each part means:**
 
-**ThemeService()** → creates a new instance of your ThemeService class.
+**-->ThemeService()** → creates a new instance of your ThemeService class.
 
-**Get.put(...)** → tells GetX to store/register that instance in its dependency injection system.
+**-->Get.put(...)** → tells GetX to store/register that instance in its dependency injection system.
 
-**permanent: true** → tells GetX not to automatically remove this service from memory, even when it's no longer being used by a particular route/page.
+**-->permanent: true** → tells GetX not to automatically remove this service from memory, even when it's no longer being used by a particular route/page.
 
 But don't blindly put every controller at application startup.
 
