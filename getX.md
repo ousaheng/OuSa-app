@@ -206,6 +206,8 @@ Do not create unnecessary files.
 
 # 🧠 GETX RESPONSIBILITIES
 
+**1. GetX responsibilities**
+
 Think of GetX as handling four major areas:
 ```
 GetX
@@ -246,7 +248,7 @@ Use GetX for:
 * Dialogs
 * Bottom sheets
 
-**Recommended architecture for your project**
+**2. Recommended architecture for your project**
 
 For the e-commerce application you've been designing, I recommend this pattern:
 
@@ -285,6 +287,43 @@ Supabase
 
 The controller should not directly contain all database logic.
 
+**3. What is GetxController?**
+
+A controller contains the state and business/UI logic for a screen or feature.
+
+Example:
+```
+import 'package:get/get.dart';
+
+class ProductController extends GetxController {
+  final products = <String>[].obs;
+
+  final isLoading = false.obs;
+
+  Future<void> loadProducts() async {
+    isLoading.value = true;
+
+    await Future.delayed(
+      const Duration(seconds: 2),
+    );
+
+    products.assignAll([
+      'iPhone',
+      'MacBook',
+      'AirPods',
+    ]);
+
+    isLoading.value = false;
+  }
+}
+```
+Notice:
+```
+.obs
+```
+makes the variable reactive.
+
+GetX's reactive system uses .obs to create observable state.
 
 Use:
 
