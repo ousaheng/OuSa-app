@@ -694,8 +694,9 @@ Get.put(CheckoutController());
 if the user hasn't even visited those screens.
 
 That's where Get.lazyPut() and bindings become useful.
-
+--
 **12. What is Get.lazyPut()?**
+
 **Get.lazyPut()** registers a factory and creates the object when it is first requested.
 
 Example:
@@ -705,6 +706,7 @@ Get.lazyPut<ProductController>(
   () => ProductController(),
 );
 ```
+
 The controller isn't immediately constructed.
 
 When:
@@ -728,6 +730,66 @@ Get.find()
 Create ProductController
 ```
 This is especially useful for route-specific controllers. GetX's dependency documentation specifically describes lazyPut as registering a builder that creates the instance when it is first requested.
+--
+**13. Get.put() vs Get.lazyPut()**
+
+Very important:
+```dart
+Get.put(
+  ProductController(),
+);
+```
+
+
+means approximately:
+
+```
+Create now
+↓
+Register
+```
+
+while:
+
+```dart
+Get.lazyPut(
+  () => ProductController(),
+);
+```
+
+means:
+
+```
+Register factory
+↓
+Wait
+↓
+Get.find()
+↓
+Create
+```
+
+**Recommendation**
+
+For your e-commerce screens:
+
+```dart
+Get.lazyPut<ProductController>(
+  () => ProductController(),
+);
+```
+
+is generally a good choice.
+
+For global services:
+
+```dart
+Get.put<AuthService>(
+  AuthService(),
+  permanent: true,
+);
+```
+can make sense.
 
 
 
