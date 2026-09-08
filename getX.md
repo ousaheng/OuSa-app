@@ -731,6 +731,8 @@ Create ProductController
 ```
 This is especially useful for route-specific controllers. GetX's dependency documentation specifically describes lazyPut as registering a builder that creates the instance when it is first requested.
 
+---
+
 **13. Get.put() vs Get.lazyPut()**
 
 Very important:
