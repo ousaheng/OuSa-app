@@ -793,6 +793,99 @@ Get.put<AuthService>(
 ```
 can make sense.
 
+---
+**14. What is Get.putAsync()?**
+**Get.putAsync()** is for dependencies that need asynchronous initialization.
+
+For example:
+```dart
+Get.putAsync<StorageService>(
+  () async {
+    return await StorageService.init();
+  },
+);
+```
+Imagine:
+
+```dart
+class StorageService {
+  static Future<StorageService> init() async {
+    final service = StorageService();
+
+    await service.initialize();
+
+    return service;
+  }
+
+  Future<void> initialize() async {
+    // Initialize storage
+  }
+}
+```
+Then:
+
+```dart
+await Get.putAsync<StorageService>(
+  () async => await StorageService.init(),
+);
+```
+This is useful for services such as:
+
+```
+SharedPreferences
+Database
+Local storage
+Secure storage
+Other async initialization
+```
+---
+# 15. Dependency Injection
+Dependency Injection sounds complicated but the idea is simple.
+
+Without DI:
+
+```dart
+class ProductController {
+  final repository = ProductRepository();
+}
+```
+The controller creates its own dependency.
+
+With DI:
+
+```dart
+class ProductController extends GetxController {
+  final ProductRepository repository;
+
+  ProductController(this.repository);
+}
+```
+
+Then:
+```dart
+Get.lazyPut<ProductRepository>(
+  () => ProductRepository(),
+);
+
+Get.lazyPut<ProductController>(
+  () => ProductController(
+    Get.find<ProductRepository>(),
+  ),
+);
+```
+Now:
+
+```
+ProductController
+       │
+       ▼
+ProductRepository
+       │
+       ▼
+Supabase
+```
+
+This makes testing and replacing implementations easier.
 
 
 
