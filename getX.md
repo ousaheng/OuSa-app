@@ -318,6 +318,10 @@ class ProductController extends GetxController {
 }
 ```
 Notice:
+
+***4. What is Obx()?***
+
+
 ```
 .obs
 ```
