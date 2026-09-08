@@ -586,6 +586,12 @@ Get.find() + Obx()
 ```
 because it makes the dependencies very obvious.
 
+```dart id="2m9r8a"
+Get.find()
+Get.put()
+Get.lazyPut()
+Get.putAsync()
+```
 **9. What is Get.find<T>()?**
 
 Get.find() retrieves an object that has already been registered with GetX.
@@ -627,11 +633,7 @@ Get.put() registers/creates the dependency immediately.
 
 Use:
 
-```dart id="2m9r8a"
-Get.put()
-Get.lazyPut()
-Get.putAsync()
-```
+
 
 appropriately.
 
