@@ -410,6 +410,34 @@ Obx(
   ),
 )
 ```
+
+unless the entire screen actually depends on reactive variables.
+
+Prefer:
+
+```dart
+Scaffold(
+  appBar: AppBar(),
+
+  body: Column(
+    children: [
+
+      Obx(
+        () => Text(
+          controller.count.value.toString(),
+        ),
+      ),
+
+      const Text(
+        'This does not need to rebuild',
+      ),
+    ],
+  ),
+)
+```
+This keeps rebuilds small.
+
+
 Use:
 
 ```dart id="9c2vkd"
@@ -417,6 +445,21 @@ GetBuilder<T>()
 ```
 
 when simple/manual controller updates are more appropriate.
+
+The main difference is how the UI is rebuilt and how the controller notifies the UI.
+
+**Quick comparison**
+
+|                      | `GetBuilder<T>()`                  | `Obx()`                                    |
+| -------------------- | ---------------------------------- | ------------------------------------------ |
+| State type           | Normal variables                   | Reactive `.obs` variables                  |
+| Rebuild triggered by | `update()`                         | Changing `.value` / reactive variable      |
+| Performance          | Very efficient, controlled rebuild | Very efficient, automatic reactive rebuild |
+| Syntax               | `GetBuilder<Controller>`           | `Obx(() => ...)`                           |
+| Best for             | Explicit/manual updates            | Reactive/automatic updates                 |
+| Requires `.obs`?     | ❌ No                               | ✅ Yes                                      |
+| Requires `update()`? | ✅ Yes                              | ❌ No                                       |
+
 
 Use:
 
