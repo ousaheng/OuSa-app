@@ -460,7 +460,130 @@ The main difference is how the UI is rebuilt and how the controller notifies the
 | Requires `.obs`?     | ❌ No                               | ✅ Yes                                      |
 | Requires `update()`? | ✅ Yes                              | ❌ No                                       |
 
+Example:
+```dart
+class ProductController extends GetxController {
+  int selectedIndex = 0;
 
+  void selectProduct(int index) {
+    selectedIndex = index;
+
+    update();
+  }
+}
+```
+UI:
+```dart
+GetBuilder<ProductController>(
+  builder: (controller) {
+    return Text(
+      'Selected: ${controller.selectedIndex}',
+    );
+  },
+)
+```
+The important part is:
+```dart
+update();
+```
+Without:
+
+```dart
+update();
+```
+the GetBuilder UI doesn't rebuild.
+**6. Obx vs GetBuilder**
+This is one of the most important GetX concepts.
+| Feature                | `Obx()`       | `GetBuilder<T>()` |
+| ---------------------- | ------------- | ----------------- |
+| State type             | Reactive      | Manual            |
+| Requires `.obs`        | Yes           | No                |
+| Rebuild triggered by   | Rx change     | `update()`        |
+| Granular rebuild       | Excellent     | Good              |
+| Simple state           | Good          | Excellent         |
+| Reactive streams/state | Excellent     | Not intended      |
+| Performance            | Very good     | Very good         |
+| Syntax                 | Slightly more | Very simple       |
+
+**Use Obx**
+When state naturally changes reactively:
+```dart
+final isLoading = false.obs;
+final products = <Product>[].obs;
+final total = 0.0.obs;
+```
+
+**Use GetBuilder**
+When you want explicit/manual updates:
+```dart
+bool isExpanded = false;
+
+void toggle() {
+  isExpanded = !isExpanded;
+  update();
+}
+```
+**7. GetX<T>()**
+GetX<T> is another reactive widget.
+
+Example:
+```dart
+GetX<CartController>(
+  builder: (controller) {
+    return Text(
+      'Items: ${controller.itemCount.value}',
+    );
+  },
+)
+```
+It combines:
+```
+Find controller
+      +
+Reactive rebuild
+```
+You can think of:
+```dart
+GetX<CartController>
+```
+as useful when you want to obtain the controller and react to its Rx state in the same widget.
+
+For most of your application, however, I would keep things simple:
+```dart
+final controller = Get.find<CartController>();
+```
+and then:
+
+```dart
+Obx(...)
+```
+**8. GetX<T> vs Obx()**
+**Obx**
+You already have the controller:
+```dart
+final controller = Get.find<CartController>();
+
+Obx(
+  () => Text(
+    '${controller.total.value}',
+  ),
+)
+```
+**GetX<T>**
+GetX gives you the controller:
+```dart
+GetX<CartController>(
+  builder: (controller) {
+    return Text(
+      '${controller.total.value}',
+    );
+  },
+)
+```
+For your architecture, I'd generally use:
+```dart
+Get.find() + Obx()
+```
 Use:
 
 ```dart id="a8n3xp"
