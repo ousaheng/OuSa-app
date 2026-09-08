@@ -319,7 +319,6 @@ class ProductController extends GetxController {
 ```
 Notice:
 
-***4. What is Obx()?***
 
 
 ```
@@ -329,6 +328,7 @@ makes the variable reactive.
 
 GetX's reactive system uses .obs to create observable state.
 
+***4. What is Obx()?***
 Use:
 
 ```dart id="q1x7kf"
