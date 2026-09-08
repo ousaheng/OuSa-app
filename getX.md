@@ -671,9 +671,65 @@ Get.put(
 );
 ```
 **What each part means:**
+
 **ThemeService()** → creates a new instance of your ThemeService class.
+
 **Get.put(...)** → tells GetX to store/register that instance in its dependency injection system.
+
 **permanent: true** → tells GetX not to automatically remove this service from memory, even when it's no longer being used by a particular route/page.
+
+But don't blindly put every controller at application startup.
+
+For example, avoid:
+
+```dart
+Get.put(HomeController());
+Get.put(ProductController());
+Get.put(CartController());
+Get.put(OrderController());
+Get.put(ProfileController());
+Get.put(AddressController());
+Get.put(CheckoutController());
+```
+if the user hasn't even visited those screens.
+
+That's where Get.lazyPut() and bindings become useful.
+
+**12. What is Get.lazyPut()?**
+**Get.lazyPut()** registers a factory and creates the object when it is first requested.
+
+Example:
+
+```dart
+Get.lazyPut<ProductController>(
+  () => ProductController(),
+);
+```
+The controller isn't immediately constructed.
+
+When:
+```dart
+Get.find<ProductController>();
+```
+is called, GetX creates it.
+
+Conceptually:
+
+```dart
+Get.lazyPut()
+      │
+      ▼
+Register factory
+      │
+      ▼
+Get.find()
+      │
+      ▼
+Create ProductController
+```
+This is especially useful for route-specific controllers. GetX's dependency documentation specifically describes lazyPut as registering a builder that creates the instance when it is first requested.
+
+
 
 
 
