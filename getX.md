@@ -584,13 +584,46 @@ For your architecture, I'd generally use:
 ```dart
 Get.find() + Obx()
 ```
-Use:
+because it makes the dependencies very obvious.
 
-```dart id="a8n3xp"
-Get.find<T>()
+**9. What is Get.find<T>()?**
+
+Get.find() retrieves an object that has already been registered with GetX.
+
+Example:
+```dart
+Get.put(CartController());
+```
+Later:
+```dart
+final controller = Get.find<CartController>();
+```
+Conceptually:
+
+```
+Register
+   ↓
+Get.put()
+   ↓
+GetX container
+   ↓
+Get.find()
+   ↓
+Controller
 ```
 
-for dependency retrieval where appropriate.
+Get.find() does not normally mean "create my controller from nothing."
+
+
+It means:
+```
+"Give me the registered instance of this type."
+```
+The GetX dependency-management documentation describes Get.find() as retrieving the registered dependency.
+
+**10. What is Get.put()?**
+
+Get.put() registers/creates the dependency immediately.
 
 Use:
 
