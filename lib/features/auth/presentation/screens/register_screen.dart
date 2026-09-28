@@ -3,33 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ousa/app/routes/app_routes.dart';
 import 'package:ousa/core/theme/app_colors.dart';
+import 'package:ousa/features/auth/presentation/controllers/register_controller.dart';
+import 'package:ousa/features/auth/presentation/validators/register_validator.dart';
 
-class RegisterScreen extends StatefulWidget {
+class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
 
   @override
-  State<RegisterScreen> createState() => _RegisterScreenState();
-}
-
-class _RegisterScreenState extends State<RegisterScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.put(RegisterController());
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       body: SingleChildScrollView(
@@ -42,7 +24,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               child: Column(
                 children: [
                   Form(
-                    key: _formKey,
+                    key: controller.formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -64,12 +46,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         const SizedBox(height: 40),
                         TextFormField(
-                          controller: _nameController,
+                          controller: controller.nameController,
                           textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: Colors.white,
-                            hintText: 'Username',
+                            hintText: 'Full Name',
                             floatingLabelStyle: TextStyle(
                               color: AppColors.primary,
                               fontWeight: FontWeight.w600,
@@ -108,16 +90,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               vertical: 18,
                             ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Full name is required';
-                            }
-                            return null;
-                          },
+                          validator: RegisterValidator.validateName,
                         ),
                         const SizedBox(height: 20),
                         TextFormField(
-                          controller: _emailController,
+                          controller: controller.emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             filled: true,
@@ -161,138 +138,135 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               vertical: 18,
                             ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Email is required';
-                            }
-                            final emailRegex = RegExp(
-                              r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                            );
-                            if (!emailRegex.hasMatch(value)) {
-                              return 'Enter a valid email address';
-                            }
-                            return null;
-                          },
+                          validator: RegisterValidator.validateEmail,
                         ),
                         const SizedBox(height: 20),
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Password',
-                            floatingLabelStyle: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight.withOpacity(
-                                  0.3,
-                                ),
-                                width: 1.2,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight.withOpacity(
-                                  0.3,
-                                ),
-                                width: 1.2,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide(
+                        Obx(
+                          () => TextFormField(
+                            controller: controller.passwordController,
+                            obscureText: controller.isPasswordVisible.value,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Password',
+                              floatingLabelStyle: TextStyle(
                                 color: AppColors.primary,
-                                width: 2,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: AppColors.backgroundLight.withOpacity(
+                                    0.3,
+                                  ),
+                                  width: 1.2,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: AppColors.backgroundLight.withOpacity(
+                                    0.3,
+                                  ),
+                                  width: 1.2,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: AppColors.primary,
+                                  width: 2,
+                                ),
+                              ),
+                              prefixIcon: Icon(
+                                Icons.lock_outline,
+                                color: AppColors.primary,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  controller.togglePasswordVisibility;
+                                },
+                                icon: Icon(
+                                  controller.isPasswordVisible.value
+                                      ? CupertinoIcons.eye_slash
+                                      : CupertinoIcons.eye,
+                                ),
+                                color: AppColors.backgroundDark,
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 18,
                               ),
                             ),
-                            prefixIcon: Icon(
-                              Icons.lock_outline,
-                              color: AppColors.primary,
-                            ),
-                            suffixIcon: Icon(
-                              CupertinoIcons.eye_slash,
-                              color: AppColors.backgroundDark,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 18,
-                            ),
+                            validator: RegisterValidator.validatePassword,
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Password is required';
-                            }
-                            if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
-                            }
-                            return null;
-                          },
                         ),
+
                         const SizedBox(height: 20),
-                        TextFormField(
-                          controller: _confirmPasswordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Re-enter your password',
-                            suffixIcon: Icon(
-                              CupertinoIcons.eye_slash,
-                              color: AppColors.backgroundDark,
-                            ),
-                            floatingLabelStyle: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight.withOpacity(
-                                  0.3,
-                                ),
-                                width: 1.2,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight.withOpacity(
-                                  0.3,
-                                ),
-                                width: 1.2,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide(
+                        Obx(
+                          () => TextFormField(
+                            controller: controller.confirmPasswordController,
+                            obscureText:
+                                controller.isConfirmPasswordVisible.value,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Re-enter your password',
+                              prefixIcon: Icon(
+                                Icons.lock_outline,
                                 color: AppColors.primary,
-                                width: 2,
+                              ),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.isConfirmPasswordVisible.value
+                                      ? CupertinoIcons.eye_slash
+                                      : CupertinoIcons.eye,
+                                  color: AppColors.backgroundDark,
+                                ),
+                                onPressed: () {
+                                  controller.toggleConfirmPasswordVisibility;
+                                },
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 18,
+                              ),
+                              floatingLabelStyle: TextStyle(
+                                color: AppColors.primary,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: AppColors.backgroundLight.withOpacity(
+                                    0.3,
+                                  ),
+                                  width: 1.2,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: AppColors.backgroundLight.withOpacity(
+                                    0.3,
+                                  ),
+                                  width: 1.2,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: AppColors.primary,
+                                  width: 2,
+                                ),
                               ),
                             ),
-                            prefixIcon: Icon(
-                              Icons.lock_outline,
-                              color: AppColors.primary,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 18,
-                            ),
+                            validator: (value) =>
+                                RegisterValidator.validateConfirmPassword(
+                                  value,
+                                  controller.passwordController.text,
+                                ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please confirm your password';
-                            }
-                            if (value != _passwordController.text) {
-                              return 'Passwords do not match';
-                            }
-                            return null;
-                          },
                         ),
                         const SizedBox(height: 20),
                         SizedBox(
@@ -300,7 +274,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           height: 60,
                           child: FilledButton(
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
+                              if (controller.formKey.currentState!.validate()) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Registration successful!'),
@@ -453,7 +427,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                Get.toNamed(AppRoutes.login);
+                                Get.offAndToNamed(AppRoutes.login);
                               },
                               child: const Text(
                                 'Login',

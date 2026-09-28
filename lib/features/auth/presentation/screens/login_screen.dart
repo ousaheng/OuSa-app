@@ -1,31 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
+import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:ousa/app/routes/app_routes.dart';
 import 'package:ousa/core/theme/app_colors.dart';
+import 'package:ousa/features/auth/presentation/controllers/login_controller.dart';
+import 'package:ousa/features/auth/presentation/validators/login_validator.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  bool rememberMe = true;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.put(LoginController());
     return Scaffold(
       backgroundColor: AppColors.backgroundLight,
       body: SingleChildScrollView(
@@ -38,7 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 children: [
                   Form(
-                    key: _formKey,
+                    key: controller.formKey,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -60,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 40),
                         TextFormField(
-                          controller: _emailController,
+                          controller: controller.emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             filled: true,
@@ -104,78 +93,66 @@ class _LoginScreenState extends State<LoginScreen> {
                               vertical: 18,
                             ),
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Email is required';
-                            }
-                            final emailRegex = RegExp(
-                              r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                            );
-                            if (!emailRegex.hasMatch(value)) {
-                              return 'Enter a valid email address';
-                            }
-                            return null;
-                          },
+                          validator: LoginValidator.validateEmail,
                         ),
                         const SizedBox(height: 20),
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Password',
-                            floatingLabelStyle: TextStyle(
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight.withOpacity(
-                                  0.3,
-                                ),
-                                width: 1.2,
-                              ),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide(
-                                color: AppColors.backgroundLight.withOpacity(
-                                  0.3,
-                                ),
-                                width: 1.2,
-                              ),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide(
+                        Obx(
+                          () => TextFormField(
+                            controller: controller.passwordController,
+                            obscureText: !controller.isPasswordVisible.value,
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Colors.white,
+                              hintText: 'Password',
+                              floatingLabelStyle: TextStyle(
                                 color: AppColors.primary,
-                                width: 2,
+                                fontWeight: FontWeight.w600,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: AppColors.backgroundLight.withOpacity(
+                                    0.3,
+                                  ),
+                                  width: 1.2,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: AppColors.backgroundLight.withOpacity(
+                                    0.3,
+                                  ),
+                                  width: 1.2,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide(
+                                  color: AppColors.primary,
+                                  width: 2,
+                                ),
+                              ),
+                              prefixIcon: Icon(
+                                Icons.lock_outline,
+                                color: AppColors.primary,
+                              ),
+                              suffixIcon: IconButton(
+                                onPressed: controller.togglePasswordVisibility,
+                                color: AppColors.backgroundDark,
+                                icon: Icon(
+                                  controller.isPasswordVisible.value
+                                      ? CupertinoIcons.eye
+                                      : CupertinoIcons.eye_slash,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 18,
                               ),
                             ),
-                            prefixIcon: Icon(
-                              Icons.lock_outline,
-                              color: AppColors.primary,
-                            ),
-                            suffixIcon: Icon(
-                              CupertinoIcons.eye_slash,
-                              color: AppColors.backgroundDark,
-                            ),
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 18,
-                            ),
+                            validator: LoginValidator.validatePassword,
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Password is required';
-                            }
-                            if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
-                            }
-                            return null;
-                          },
                         ),
                         const SizedBox(height: 10),
                         Row(
@@ -183,16 +160,15 @@ class _LoginScreenState extends State<LoginScreen> {
                           children: [
                             Row(
                               children: [
-                                Checkbox(
-                                  value: rememberMe,
-                                  activeColor: AppColors.primary,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      rememberMe = value ?? true;
-                                    });
-                                    print('Remember me: $rememberMe');
-                                    print(value);
-                                  },
+                                Obx(
+                                  () => Checkbox(
+                                    value: controller.rememberMe.value,
+                                    activeColor: AppColors.primary,
+                                    onChanged: (value) {
+                                      controller.rememberMe.value =
+                                          value ?? false;
+                                    },
+                                  ),
                                 ),
                                 const Text('Remember me'),
                               ],
@@ -217,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 60,
                           child: FilledButton(
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
+                              if (controller.formKey.currentState!.validate()) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text('Login successful!'),
@@ -226,6 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                                 Get.offAndToNamed(AppRoutes.home);
                               }
+                              controller.clearFields();
                             },
                             style: ButtonStyle(
                               backgroundColor: WidgetStateProperty.all(
@@ -369,7 +346,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             TextButton(
                               onPressed: () {
-                                Get.offAndToNamed(AppRoutes.home);
+                                Get.offAndToNamed(AppRoutes.register);
                               },
                               child: const Text(
                                 'Sign Up',

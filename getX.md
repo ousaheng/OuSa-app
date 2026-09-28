@@ -887,6 +887,41 @@ Supabase
 
 This makes testing and replacing implementations easier.
 
+# 16. What are Bindings?
+**Bindings connect a route with its dependencies.**
+
+This is extremely useful for your project.
+
+Example:
+```dart
+class ProductBinding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut<ProductRepository>(
+      () => ProductRepository(),
+    );
+
+    Get.lazyPut<ProductController>(
+      () => ProductController(
+        Get.find<ProductRepository>(),
+      ),
+    );
+  }
+}
+```
+
+Then:
+
+```dart
+GetPage(
+  name: '/products',
+  page: () => const ProductView(),
+  binding: ProductBinding(),
+),
+```
+
+
+
 
 
 
